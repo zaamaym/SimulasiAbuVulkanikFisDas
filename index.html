@@ -26,7 +26,7 @@
     <!-- Latar Belakang Gelap untuk Mobile Sidebar -->
     <div id="mobile-overlay" class="fixed inset-0 bg-slate-900/50 z-30 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
-    <!-- Tour Click Blocker: Mengunci klik layar saat tutorial jalan -->
+    <!-- Tour Click Blocker: Mengunci klik seluruh layar (kecuali dialog tour) saat tutorial jalan -->
     <div id="tour-click-blocker" class="fixed inset-0 z-[105] hidden bg-transparent cursor-default"></div>
 
     <!-- Panel Kontrol -->
@@ -353,10 +353,11 @@
     </div>
 
     <!-- Tour Overlay & Dialog -->
-    <div id="tour-highlighter" class="fixed z-[100] hidden rounded-lg border-2 border-blue-400 pointer-events-none transition-all duration-300" style="box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.85);"></div>
+    <!-- Dihapus 'transition-all' pada highlighter agar perpindahan kotaknya instan, tidak sliding aneh -->
+    <div id="tour-highlighter" class="fixed z-[100] hidden rounded-lg border-2 border-blue-400 pointer-events-none transition-opacity duration-300" style="box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.85);"></div>
     
-    <!-- PENTING: max-h-[85vh] dan overflow-y-auto agar aman di HP -->
-    <div id="tour-dialog" class="fixed z-[110] hidden bg-white p-5 shadow-2xl transition-all duration-300 transform scale-95 opacity-0 max-h-[85vh] flex flex-col">
+    <!-- Dihapus 'transition-all' diganti dengan transisi spesifik transform & opacity -->
+    <div id="tour-dialog" class="fixed z-[110] hidden bg-white p-5 shadow-2xl transition-opacity transition-transform duration-300 transform scale-95 opacity-0 max-h-[85vh] flex flex-col">
         <div class="overflow-y-auto modal-scroll pr-1 flex-1">
             <h3 id="tour-title" class="text-lg font-bold text-slate-800 mb-2"></h3>
             <div id="tour-desc" class="text-sm text-slate-600 mb-2 leading-relaxed"></div>
