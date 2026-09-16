@@ -276,6 +276,7 @@ function renderTourStep() {
             highlighter.style.boxShadow = '0 0 0 9999px rgba(15, 23, 42, 0.85)';
             highlighter.classList.remove('hidden');
 
+            // Kalkulasi Posisi
             if (isMobile) {
                 const dialogWidth = window.innerWidth * 0.9;
                 dialog.style.width = dialogWidth + 'px';
@@ -295,16 +296,24 @@ function renderTourStep() {
                 let dlgX = rect.right + 20;
                 let dlgY = rect.top;
                 
+                // Mencegah overflow ke kanan
                 if (dlgX + 350 > window.innerWidth) dlgX = rect.left - 350 - 20;
                 
-                // Menghitung tinggi aslinya agar dialog tidak melewati batas bawah monitor desktop
+                // Mencegah ketutupan ke bawah, ini perbaikan dari bug kamu
+                // Set style left/top dulu biar browser ngerti, tapi opacity masih 0
+                dialog.style.left = dlgX + 'px';
+                dialog.style.top = dlgY + 'px';
+                
+                // Ukur ketinggian aslinya
                 const dialogHeight = dialog.offsetHeight;
+                
+                // Koreksi Y jika melampaui batas layar (tinggalkan margin 20px)
                 if (dlgY + dialogHeight > window.innerHeight - 20) {
                     dlgY = window.innerHeight - dialogHeight - 20;
                     if (dlgY < 20) dlgY = 20; 
                 }
                 
-                dialog.style.left = dlgX + 'px';
+                // Timpa ulang top dengan Y yang sudah dikoreksi
                 dialog.style.top = dlgY + 'px';
                 dialog.style.borderRadius = '0.75rem';
             }
@@ -621,7 +630,7 @@ function stepPhysicsCore(obj, dt) {
     if (lastPath) {
         const dist = Math.hypot(obj.x - lastPath.x, obj.y - lastPath.y); obj.pathTimer += dt;
         let shouldSave = false;
-        if (obj.type === 'batu' && dist > 10) shouldSave = true; else if (obj.type === 'abu' && (dist > 500 || obj.pathTimer > 60)) shouldSave = true;
+        if (obj.type === 'batu' && dist > 10) shouldSave = true; else if (obj.type === 'abu' && (dist > 500 || obj.pathTimer > 60)) scheduleSave = true;
         if (shouldSave) { obj.path.push({x: obj.x, y: obj.y}); obj.pathTimer = 0; if (obj.path.length > 5000) obj.path.shift(); }
     }
 }
