@@ -13,65 +13,6 @@ btnOpenSidebar.addEventListener('click', toggleSidebar);
 btnCloseSidebar.addEventListener('click', toggleSidebar);
 overlay.addEventListener('click', toggleSidebar);
 
-// --- CUSTOM DROPDOWN LOGIC (Menangani Pilihan Menu yang Distyling) ---
-document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
-    const select = wrapper.querySelector('select');
-    const trigger = wrapper.querySelector('.custom-select-trigger');
-    const textNode = trigger.querySelector('.custom-select-text');
-    const optionsPanel = wrapper.querySelector('.custom-select-options');
-    const arrow = trigger.querySelector('svg');
-    const options = optionsPanel.querySelectorAll('.custom-option');
-
-    // Tutup opsi saat diklik di luarnya
-    document.addEventListener('click', (e) => {
-        if (!wrapper.contains(e.target) && !optionsPanel.classList.contains('hidden')) {
-            optionsPanel.classList.add('opacity-0', 'scale-y-95');
-            arrow.style.transform = 'rotate(0deg)';
-            setTimeout(() => optionsPanel.classList.add('hidden'), 200);
-        }
-    });
-
-    trigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isHidden = optionsPanel.classList.contains('hidden');
-        
-        // Tutup dropdown lain yang mungkin sedang terbuka
-        document.querySelectorAll('.custom-select-options').forEach(p => {
-            if (p !== optionsPanel && !p.classList.contains('hidden')) {
-                p.classList.add('opacity-0', 'scale-y-95');
-                p.parentElement.querySelector('svg').style.transform = 'rotate(0deg)';
-                setTimeout(() => p.classList.add('hidden'), 200);
-            }
-        });
-
-        if (isHidden) {
-            optionsPanel.classList.remove('hidden');
-            setTimeout(() => optionsPanel.classList.remove('opacity-0', 'scale-y-95'), 10);
-            arrow.style.transform = 'rotate(180deg)';
-        } else {
-            optionsPanel.classList.add('opacity-0', 'scale-y-95');
-            arrow.style.transform = 'rotate(0deg)';
-            setTimeout(() => optionsPanel.classList.add('hidden'), 200);
-        }
-    });
-
-    options.forEach(opt => {
-        opt.addEventListener('click', (e) => {
-            e.stopPropagation();
-            textNode.innerText = opt.innerText; // Update teks kotak
-            select.value = opt.dataset.value;   // Update internal value
-            
-            // Tutup panel
-            optionsPanel.classList.add('opacity-0', 'scale-y-95');
-            arrow.style.transform = 'rotate(0deg)';
-            setTimeout(() => optionsPanel.classList.add('hidden'), 200);
-            
-            // Memicu trigger change secara manual agar terbaca engine fisika
-            select.dispatchEvent(new Event('change'));
-        });
-    });
-});
-
 // --- 2. LOGIKA INFO BUBBLE TOOLTIP ('i') ---
 const varInfoDict = {
     'v0': { title: "Kecepatan Semburan Awal ($v_0$)", text: "Kecepatan gas saat memuntahkan material. Semakin tinggi nilainya, semakin kuat dorongan vertikalnya, memungkinkan abu mencapai ketinggian ekstrem." },
@@ -133,7 +74,71 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// --- 3. LOGIKA DRAGGABLE PANELS & COLLAPSE UI ---
+
+// --- 3. LOGIKA CUSTOM DROPDOWN UI (Memperbaiki bug menu tidak bisa ditekan) ---
+document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+    const select = wrapper.querySelector('select');
+    const trigger = wrapper.querySelector('.custom-select-trigger');
+    const textNode = trigger.querySelector('.custom-select-text');
+    const optionsPanel = wrapper.querySelector('.custom-select-options');
+    const arrow = trigger.querySelector('svg');
+    const options = optionsPanel.querySelectorAll('.custom-option');
+
+    // Tutup opsi saat diklik di luar area dropdown
+    document.addEventListener('click', (e) => {
+        if (!wrapper.contains(e.target) && !optionsPanel.classList.contains('hidden')) {
+            optionsPanel.classList.add('opacity-0', 'scale-y-95');
+            arrow.style.transform = 'rotate(0deg)';
+            setTimeout(() => optionsPanel.classList.add('hidden'), 200);
+        }
+    });
+
+    trigger.addEventListener('click', (e) => {
+        e.preventDefault(); // Mencegah double tap behavior di Mobile
+        e.stopPropagation();
+        
+        const isHidden = optionsPanel.classList.contains('hidden');
+        
+        // Tutup semua dropdown lain yang mungkin sedang terbuka
+        document.querySelectorAll('.custom-select-options').forEach(p => {
+            if (p !== optionsPanel && !p.classList.contains('hidden')) {
+                p.classList.add('opacity-0', 'scale-y-95');
+                const otherArrow = p.parentElement.querySelector('.custom-select-trigger svg');
+                if(otherArrow) otherArrow.style.transform = 'rotate(0deg)';
+                setTimeout(() => p.classList.add('hidden'), 200);
+            }
+        });
+
+        // Buka / Tutup panel yang diklik
+        if (isHidden) {
+            optionsPanel.classList.remove('hidden');
+            setTimeout(() => optionsPanel.classList.remove('opacity-0', 'scale-y-95'), 10);
+            arrow.style.transform = 'rotate(180deg)';
+        } else {
+            optionsPanel.classList.add('opacity-0', 'scale-y-95');
+            arrow.style.transform = 'rotate(0deg)';
+            setTimeout(() => optionsPanel.classList.add('hidden'), 200);
+        }
+    });
+
+    options.forEach(opt => {
+        opt.addEventListener('click', (e) => {
+            e.stopPropagation();
+            textNode.innerText = opt.innerText; 
+            select.value = opt.dataset.value;   
+            
+            optionsPanel.classList.add('opacity-0', 'scale-y-95');
+            arrow.style.transform = 'rotate(0deg)';
+            setTimeout(() => optionsPanel.classList.add('hidden'), 200);
+            
+            // Picu pembaruan fisika (Ekuivalen dengan memutar event 'change' pada tag <select> asli)
+            select.dispatchEvent(new Event('change'));
+        });
+    });
+});
+
+
+// --- 4. LOGIKA DRAGGABLE PANELS & COLLAPSE UI ---
 const durasiPanel = document.getElementById('durasi-panel');
 const panelHeader = document.getElementById('panel-header');
 const panelBody = document.getElementById('panel-body');
@@ -274,7 +279,7 @@ function updateLegendUI() {
 applyLegendState();
 
 
-// --- 4. LOGIKA INTERACTIVE GUIDED TOUR BEBAS LONCAT ---
+// --- 5. LOGIKA INTERACTIVE GUIDED TOUR BEBAS LONCAT ---
 let currentTourStep = -1;
 const tourSteps = [
     { target: null, title: "Selamat Datang!", desc: "Mari kenali fitur-fitur di simulasi Anak Krakatau ini. Tekan lanjut untuk mulai tur interaktif." },
@@ -438,7 +443,7 @@ function endTour() {
 window.addEventListener('DOMContentLoaded', () => { startTour(); });
 
 // =========================================================================
-// --- 5. ENGINE FISIKA, PINCH-TO-ZOOM, CANVAS, & LEAFLET MAP ---
+// --- 6. ENGINE FISIKA, PINCH-TO-ZOOM, CANVAS, & LEAFLET MAP ---
 // =========================================================================
 
 let state = { t: 0, scale: 0.03, offsetX: 200, offsetY: 100, particles: [], hColBase: 6000 };
@@ -828,7 +833,6 @@ let initialPinchScale = null;
 canvas.addEventListener('mousedown', (e) => { isDraggingCanvas = true; dragStartX = e.clientX; dragStartY = e.clientY; initOffsetX = state.offsetX; initOffsetY = state.offsetY; canvas.classList.add('grabbing-cursor'); });
 window.addEventListener('mousemove', (e) => { if (!isDraggingCanvas) return; state.offsetX = initOffsetX + (e.clientX - dragStartX); state.offsetY = initOffsetY - (e.clientY - dragStartY); if (!isPlaying) draw(); });
 
-// Menangani Touchscreen (Pinch to Zoom & Panning)
 canvas.addEventListener('touchstart', (e) => { 
     if (e.touches.length === 2) {
         e.preventDefault();
@@ -847,7 +851,7 @@ canvas.addEventListener('touchstart', (e) => {
 
 window.addEventListener('touchmove', (e) => { 
     if (isPinching && e.touches.length === 2) {
-        e.preventDefault(); // Mengunci scroll body/layar agar tidak ikut bergerak
+        e.preventDefault(); 
         const currentDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
         state.scale = Math.max(0.000005, Math.min(0.05, initialPinchScale * (currentDistance / initialPinchDistance)));
         inputs.scale.value = state.scale;
