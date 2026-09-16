@@ -215,7 +215,7 @@ function updateLegendUI() {
 applyLegendState();
 
 
-// --- 4. LOGIKA INTERACTIVE GUIDED TOUR ---
+// --- 4. LOGIKA INTERACTIVE GUIDED TOUR BEBAS LONCAT (SMART FADE-TRANSITION) ---
 let currentTourStep = -1;
 const tourSteps = [
     { target: null, title: "Selamat Datang!", desc: "Mari kenali fitur-fitur di simulasi Anak Krakatau ini. Tekan lanjut untuk mulai tur interaktif." },
@@ -237,7 +237,6 @@ function startTour() {
 function renderTourStep() {
     const step = tourSteps[currentTourStep];
     const isMobile = window.innerWidth < 768;
-    
     const inSidebar = ['tour-step-1-container', 'tour-step-info-example', 'tour-step-mode', 'tour-step-3', 'btn-start'].includes(step.target);
     
     if (isMobile) {
@@ -248,112 +247,127 @@ function renderTourStep() {
         }
     }
 
-    setTimeout(() => {
-        const highlighter = document.getElementById('tour-highlighter');
-        const dialog = document.getElementById('tour-dialog');
-        const prevBtn = document.getElementById('tour-prev-btn');
+    const highlighter = document.getElementById('tour-highlighter');
+    const dialog = document.getElementById('tour-dialog');
+    const prevBtn = document.getElementById('tour-prev-btn');
+    
+    // Perbarui isi teks selagi tersembunyi/invisible
+    document.getElementById('tour-title').innerHTML = step.title;
+    document.getElementById('tour-desc').innerHTML = step.desc;
+    document.getElementById('tour-progress').innerText = `${currentTourStep + 1} / ${tourSteps.length}`;
+    document.getElementById('tour-next-btn').innerText = currentTourStep === tourSteps.length - 1 ? "Selesai" : "Lanjut";
+
+    if (currentTourStep === 0) prevBtn.classList.add('hidden');
+    else prevBtn.classList.remove('hidden');
+
+    dialog.classList.remove('hidden');
+
+    if (step.target) {
+        const el = document.getElementById(step.target);
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         
-        dialog.style.transform = 'none';
-        dialog.style.bottom = 'auto';
-
-        if (currentTourStep === 0) {
-            prevBtn.classList.add('hidden');
-        } else {
-            prevBtn.classList.remove('hidden');
-        }
-
-        // UPDATE HTML CONTENT DULUAN agar tinggi elemen (offsetHeight) akurat
-        document.getElementById('tour-title').innerHTML = step.title;
-        document.getElementById('tour-desc').innerHTML = step.desc;
-        document.getElementById('tour-progress').innerText = `${currentTourStep + 1} / ${tourSteps.length}`;
-        document.getElementById('tour-next-btn').innerText = currentTourStep === tourSteps.length - 1 ? "Selesai" : "Lanjut";
-
-        dialog.classList.remove('hidden');
-
-        if (step.target) {
-            const el = document.getElementById(step.target);
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => {
+            const rect = el.getBoundingClientRect();
             
-            setTimeout(() => {
-                const rect = el.getBoundingClientRect();
-                
-                highlighter.style.top = (rect.top - 6) + 'px'; 
-                highlighter.style.left = (rect.left - 6) + 'px';
-                highlighter.style.width = (rect.width + 12) + 'px'; 
-                highlighter.style.height = (rect.height + 12) + 'px';
-                highlighter.style.boxShadow = '0 0 0 9999px rgba(15, 23, 42, 0.85)';
-                highlighter.classList.remove('hidden', 'opacity-0');
-
-                if (isMobile) {
-                    const dialogWidth = window.innerWidth * 0.9;
-                    dialog.style.width = dialogWidth + 'px';
-                    dialog.style.left = ((window.innerWidth - dialogWidth) / 2) + 'px';
-                    
-                    const elementCenterY = rect.top + (rect.height / 2);
-                    if (elementCenterY > window.innerHeight / 2) {
-                        dialog.style.top = '24px';
-                        dialog.style.bottom = 'auto';
-                    } else {
-                        dialog.style.top = 'auto';
-                        dialog.style.bottom = '24px';
-                    }
-                    dialog.style.borderRadius = '1rem';
-                } else {
-                    dialog.style.width = '350px';
-                    let dlgX = rect.right + 20;
-                    let dlgY = rect.top;
-                    
-                    if (dlgX + 350 > window.innerWidth) dlgX = rect.left - 350 - 20;
-                    
-                    // PENYESUAIAN PENTING: Kalkulasi tinggi asli dialog agar tidak overflow ke bawah
-                    const dialogHeight = dialog.offsetHeight;
-                    if (dlgY + dialogHeight > window.innerHeight - 20) {
-                        dlgY = window.innerHeight - dialogHeight - 20;
-                        if (dlgY < 20) dlgY = 20; // Batas mentok atas
-                    }
-                    
-                    dialog.style.left = dlgX + 'px';
-                    dialog.style.top = dlgY + 'px';
-                    dialog.style.borderRadius = '0.75rem';
-                }
-                setTimeout(() => dialog.classList.remove('opacity-0', 'scale-95'), 50);
-            }, 300); 
-        } else {
-            highlighter.style.top = '50%'; highlighter.style.left = '50%';
-            highlighter.style.width = '0px'; highlighter.style.height = '0px';
+            highlighter.style.top = (rect.top - 6) + 'px'; 
+            highlighter.style.left = (rect.left - 6) + 'px';
+            highlighter.style.width = (rect.width + 12) + 'px'; 
+            highlighter.style.height = (rect.height + 12) + 'px';
             highlighter.style.boxShadow = '0 0 0 9999px rgba(15, 23, 42, 0.85)';
-            highlighter.classList.remove('hidden', 'opacity-0');
+            highlighter.classList.remove('hidden');
 
             if (isMobile) {
-                dialog.style.width = '90%';
-                dialog.style.left = '5%';
-                dialog.style.top = 'auto';
-                dialog.style.bottom = '24px';
-                dialog.style.transform = 'none';
+                const dialogWidth = window.innerWidth * 0.9;
+                dialog.style.width = dialogWidth + 'px';
+                dialog.style.left = ((window.innerWidth - dialogWidth) / 2) + 'px';
+                
+                const elementCenterY = rect.top + (rect.height / 2);
+                if (elementCenterY > window.innerHeight / 2) {
+                    dialog.style.top = '24px';
+                    dialog.style.bottom = 'auto';
+                } else {
+                    dialog.style.top = 'auto';
+                    dialog.style.bottom = '24px';
+                }
                 dialog.style.borderRadius = '1rem';
             } else {
-                dialog.style.left = '50%';
-                dialog.style.top = '50%';
-                dialog.style.transform = 'translate(-50%, -50%)';
-                dialog.style.bottom = 'auto';
                 dialog.style.width = '350px';
+                let dlgX = rect.right + 20;
+                let dlgY = rect.top;
+                
+                if (dlgX + 350 > window.innerWidth) dlgX = rect.left - 350 - 20;
+                
+                // Menghitung tinggi aslinya agar dialog tidak melewati batas bawah monitor desktop
+                const dialogHeight = dialog.offsetHeight;
+                if (dlgY + dialogHeight > window.innerHeight - 20) {
+                    dlgY = window.innerHeight - dialogHeight - 20;
+                    if (dlgY < 20) dlgY = 20; 
+                }
+                
+                dialog.style.left = dlgX + 'px';
+                dialog.style.top = dlgY + 'px';
                 dialog.style.borderRadius = '0.75rem';
             }
-            setTimeout(() => dialog.classList.remove('opacity-0', 'scale-95'), 50);
-        }
-    }, isMobile ? 350 : 50); 
-}
+            
+            // Fade-in diaktifkan setelah posisinya dirender dengan benar
+            setTimeout(() => {
+                dialog.classList.remove('opacity-0', 'scale-95');
+                highlighter.classList.remove('opacity-0');
+            }, 50);
+        }, 300); 
+    } else {
+        // Tampilan Sambutan Pertama (Tengah)
+        highlighter.style.top = '50%'; highlighter.style.left = '50%';
+        highlighter.style.width = '0px'; highlighter.style.height = '0px';
+        highlighter.style.boxShadow = '0 0 0 9999px rgba(15, 23, 42, 0.85)';
+        highlighter.classList.remove('hidden');
 
-function prevTourStep() {
-    if (currentTourStep > 0) {
-        currentTourStep--;
-        renderTourStep();
+        if (isMobile) {
+            dialog.style.width = '90%';
+            dialog.style.left = '5%';
+            dialog.style.top = 'auto';
+            dialog.style.bottom = '24px';
+            dialog.style.transform = 'none';
+            dialog.style.borderRadius = '1rem';
+        } else {
+            dialog.style.left = '50%';
+            dialog.style.top = '50%';
+            dialog.style.transform = 'translate(-50%, -50%)';
+            dialog.style.bottom = 'auto';
+            dialog.style.width = '350px';
+            dialog.style.borderRadius = '0.75rem';
+        }
+
+        setTimeout(() => {
+            dialog.classList.remove('opacity-0', 'scale-95');
+            highlighter.classList.remove('opacity-0');
+        }, 50);
     }
 }
 
 function nextTourStep() {
-    if (currentTourStep >= tourSteps.length - 1) endTour();
-    else { currentTourStep++; renderTourStep(); }
+    if (currentTourStep >= tourSteps.length - 1) {
+        endTour();
+    } else {
+        // Fade-out instan sebelum mindah posisi
+        document.getElementById('tour-dialog').classList.add('opacity-0', 'scale-95');
+        document.getElementById('tour-highlighter').classList.add('opacity-0');
+        setTimeout(() => {
+            currentTourStep++;
+            renderTourStep();
+        }, 250); 
+    }
+}
+
+function prevTourStep() {
+    if (currentTourStep > 0) {
+        document.getElementById('tour-dialog').classList.add('opacity-0', 'scale-95');
+        document.getElementById('tour-highlighter').classList.add('opacity-0');
+        setTimeout(() => {
+            currentTourStep--;
+            renderTourStep();
+        }, 250);
+    }
 }
 
 function endTour() {
@@ -368,7 +382,7 @@ function endTour() {
 window.addEventListener('DOMContentLoaded', () => { startTour(); });
 
 // =========================================================================
-// --- 5. ENGINE FISIKA, GRAFIS CANVAS, & LEAFLET MAP ---
+// --- 5. ENGINE FISIKA, PINCH-TO-ZOOM, CANVAS, & LEAFLET MAP ---
 // =========================================================================
 
 let state = { t: 0, scale: 0.03, offsetX: 200, offsetY: 100, particles: [], hColBase: 6000 };
@@ -750,14 +764,50 @@ btnStart.addEventListener('click', () => {
 });
 btnReset.addEventListener('click', resetSimulation); btnResetView.addEventListener('click', () => { state.offsetX = 200; state.offsetY = 100; if (!isPlaying) draw(); });
 
-canvas.addEventListener('mousedown', (e) => { isDraggingCanvas = true; dragStartX = e.clientX; dragStartY = e.clientY; initOffsetX = state.offsetX; initOffsetY = state.offsetY; canvas.classList.add('grabbing-cursor'); });
-canvas.addEventListener('touchstart', (e) => { isDraggingCanvas = true; dragStartX = e.touches[0].clientX; dragStartY = e.touches[0].clientY; initOffsetX = state.offsetX; initOffsetY = state.offsetY; }, {passive: true});
+// -- LOGIKA PAN DAN PINCH TO ZOOM TOUCHSCREEN ---
+let isPinching = false;
+let initialPinchDistance = null;
+let initialPinchScale = null;
 
+canvas.addEventListener('mousedown', (e) => { isDraggingCanvas = true; dragStartX = e.clientX; dragStartY = e.clientY; initOffsetX = state.offsetX; initOffsetY = state.offsetY; canvas.classList.add('grabbing-cursor'); });
 window.addEventListener('mousemove', (e) => { if (!isDraggingCanvas) return; state.offsetX = initOffsetX + (e.clientX - dragStartX); state.offsetY = initOffsetY - (e.clientY - dragStartY); if (!isPlaying) draw(); });
-window.addEventListener('touchmove', (e) => { if (!isDraggingCanvas) return; state.offsetX = initOffsetX + (e.touches[0].clientX - dragStartX); state.offsetY = initOffsetY - (e.touches[0].clientY - dragStartY); if (!isPlaying) draw(); }, {passive: true});
+
+// Menangani Touchscreen (Pinch to Zoom & Panning)
+canvas.addEventListener('touchstart', (e) => { 
+    if (e.touches.length === 2) {
+        e.preventDefault();
+        isPinching = true;
+        isDraggingCanvas = false;
+        initialPinchDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        initialPinchScale = state.scale;
+    } else if (e.touches.length === 1) {
+        isDraggingCanvas = true; 
+        dragStartX = e.touches[0].clientX; 
+        dragStartY = e.touches[0].clientY; 
+        initOffsetX = state.offsetX; 
+        initOffsetY = state.offsetY; 
+    }
+}, {passive: false});
+
+window.addEventListener('touchmove', (e) => { 
+    if (isPinching && e.touches.length === 2) {
+        e.preventDefault(); // Mengunci scroll body/layar agar tidak ikut bergerak
+        const currentDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        state.scale = Math.max(0.000005, Math.min(0.05, initialPinchScale * (currentDistance / initialPinchDistance)));
+        inputs.scale.value = state.scale;
+        if (!isPlaying) draw();
+    } else if (isDraggingCanvas && e.touches.length === 1) {
+        state.offsetX = initOffsetX + (e.touches[0].clientX - dragStartX); 
+        state.offsetY = initOffsetY - (e.touches[0].clientY - dragStartY); 
+        if (!isPlaying) draw(); 
+    }
+}, {passive: false});
 
 window.addEventListener('mouseup', () => { isDraggingCanvas = false; canvas.classList.remove('grabbing-cursor'); });
-window.addEventListener('touchend', () => { isDraggingCanvas = false; canvas.classList.remove('grabbing-cursor'); });
+window.addEventListener('touchend', (e) => { 
+    if (e.touches.length < 2) isPinching = false;
+    if (e.touches.length === 0) isDraggingCanvas = false; 
+});
 canvas.addEventListener('mouseleave', () => { isDraggingCanvas = false; canvas.classList.remove('grabbing-cursor'); });
 
 canvas.addEventListener('wheel', (e) => { e.preventDefault(); let zoomMultiplier = e.deltaY < 0 ? 1.15 : 0.85; state.scale = Math.max(0.000005, Math.min(0.05, state.scale * zoomMultiplier)); inputs.scale.value = state.scale; if (!isPlaying) draw(); }, { passive: false });
