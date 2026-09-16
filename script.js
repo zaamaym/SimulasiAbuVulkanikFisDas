@@ -13,6 +13,65 @@ btnOpenSidebar.addEventListener('click', toggleSidebar);
 btnCloseSidebar.addEventListener('click', toggleSidebar);
 overlay.addEventListener('click', toggleSidebar);
 
+// --- CUSTOM DROPDOWN LOGIC (Menangani Pilihan Menu yang Distyling) ---
+document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+    const select = wrapper.querySelector('select');
+    const trigger = wrapper.querySelector('.custom-select-trigger');
+    const textNode = trigger.querySelector('.custom-select-text');
+    const optionsPanel = wrapper.querySelector('.custom-select-options');
+    const arrow = trigger.querySelector('svg');
+    const options = optionsPanel.querySelectorAll('.custom-option');
+
+    // Tutup opsi saat diklik di luarnya
+    document.addEventListener('click', (e) => {
+        if (!wrapper.contains(e.target) && !optionsPanel.classList.contains('hidden')) {
+            optionsPanel.classList.add('opacity-0', 'scale-y-95');
+            arrow.style.transform = 'rotate(0deg)';
+            setTimeout(() => optionsPanel.classList.add('hidden'), 200);
+        }
+    });
+
+    trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isHidden = optionsPanel.classList.contains('hidden');
+        
+        // Tutup dropdown lain yang mungkin sedang terbuka
+        document.querySelectorAll('.custom-select-options').forEach(p => {
+            if (p !== optionsPanel && !p.classList.contains('hidden')) {
+                p.classList.add('opacity-0', 'scale-y-95');
+                p.parentElement.querySelector('svg').style.transform = 'rotate(0deg)';
+                setTimeout(() => p.classList.add('hidden'), 200);
+            }
+        });
+
+        if (isHidden) {
+            optionsPanel.classList.remove('hidden');
+            setTimeout(() => optionsPanel.classList.remove('opacity-0', 'scale-y-95'), 10);
+            arrow.style.transform = 'rotate(180deg)';
+        } else {
+            optionsPanel.classList.add('opacity-0', 'scale-y-95');
+            arrow.style.transform = 'rotate(0deg)';
+            setTimeout(() => optionsPanel.classList.add('hidden'), 200);
+        }
+    });
+
+    options.forEach(opt => {
+        opt.addEventListener('click', (e) => {
+            e.stopPropagation();
+            textNode.innerText = opt.innerText; // Update teks kotak
+            select.value = opt.dataset.value;   // Update internal value
+            
+            // Tutup panel
+            optionsPanel.classList.add('opacity-0', 'scale-y-95');
+            arrow.style.transform = 'rotate(0deg)';
+            setTimeout(() => optionsPanel.classList.add('hidden'), 200);
+            
+            // Memicu trigger change secara manual agar terbaca engine fisika
+            select.dispatchEvent(new Event('change'));
+        });
+    });
+});
+
 // --- 2. LOGIKA INFO BUBBLE TOOLTIP ('i') ---
 const varInfoDict = {
     'v0': { title: "Kecepatan Semburan Awal ($v_0$)", text: "Kecepatan gas saat memuntahkan material. Semakin tinggi nilainya, semakin kuat dorongan vertikalnya, memungkinkan abu mencapai ketinggian ekstrem." },
@@ -215,7 +274,7 @@ function updateLegendUI() {
 applyLegendState();
 
 
-// --- 4. LOGIKA INTERACTIVE GUIDED TOUR BEBAS LONCAT (SMART FADE-TRANSITION) ---
+// --- 4. LOGIKA INTERACTIVE GUIDED TOUR BEBAS LONCAT ---
 let currentTourStep = -1;
 const tourSteps = [
     { target: null, title: "Selamat Datang!", desc: "Mari kenali fitur-fitur di simulasi Anak Krakatau ini. Tekan lanjut untuk mulai tur interaktif." },
@@ -251,7 +310,6 @@ function renderTourStep() {
     const dialog = document.getElementById('tour-dialog');
     const prevBtn = document.getElementById('tour-prev-btn');
     
-    // Perbarui isi teks selagi tersembunyi/invisible
     document.getElementById('tour-title').innerHTML = step.title;
     document.getElementById('tour-desc').innerHTML = step.desc;
     document.getElementById('tour-progress').innerText = `${currentTourStep + 1} / ${tourSteps.length}`;
@@ -276,7 +334,6 @@ function renderTourStep() {
             highlighter.style.boxShadow = '0 0 0 9999px rgba(15, 23, 42, 0.85)';
             highlighter.classList.remove('hidden');
 
-            // Kalkulasi Posisi
             if (isMobile) {
                 const dialogWidth = window.innerWidth * 0.9;
                 dialog.style.width = dialogWidth + 'px';
@@ -296,36 +353,27 @@ function renderTourStep() {
                 let dlgX = rect.right + 20;
                 let dlgY = rect.top;
                 
-                // Mencegah overflow ke kanan
                 if (dlgX + 350 > window.innerWidth) dlgX = rect.left - 350 - 20;
                 
-                // Mencegah ketutupan ke bawah, ini perbaikan dari bug kamu
-                // Set style left/top dulu biar browser ngerti, tapi opacity masih 0
                 dialog.style.left = dlgX + 'px';
                 dialog.style.top = dlgY + 'px';
                 
-                // Ukur ketinggian aslinya
                 const dialogHeight = dialog.offsetHeight;
-                
-                // Koreksi Y jika melampaui batas layar (tinggalkan margin 20px)
                 if (dlgY + dialogHeight > window.innerHeight - 20) {
                     dlgY = window.innerHeight - dialogHeight - 20;
                     if (dlgY < 20) dlgY = 20; 
                 }
                 
-                // Timpa ulang top dengan Y yang sudah dikoreksi
                 dialog.style.top = dlgY + 'px';
                 dialog.style.borderRadius = '0.75rem';
             }
             
-            // Fade-in diaktifkan setelah posisinya dirender dengan benar
             setTimeout(() => {
                 dialog.classList.remove('opacity-0', 'scale-95');
                 highlighter.classList.remove('opacity-0');
             }, 50);
         }, 300); 
     } else {
-        // Tampilan Sambutan Pertama (Tengah)
         highlighter.style.top = '50%'; highlighter.style.left = '50%';
         highlighter.style.width = '0px'; highlighter.style.height = '0px';
         highlighter.style.boxShadow = '0 0 0 9999px rgba(15, 23, 42, 0.85)';
@@ -358,7 +406,6 @@ function nextTourStep() {
     if (currentTourStep >= tourSteps.length - 1) {
         endTour();
     } else {
-        // Fade-out instan sebelum mindah posisi
         document.getElementById('tour-dialog').classList.add('opacity-0', 'scale-95');
         document.getElementById('tour-highlighter').classList.add('opacity-0');
         setTimeout(() => {
@@ -630,7 +677,7 @@ function stepPhysicsCore(obj, dt) {
     if (lastPath) {
         const dist = Math.hypot(obj.x - lastPath.x, obj.y - lastPath.y); obj.pathTimer += dt;
         let shouldSave = false;
-        if (obj.type === 'batu' && dist > 10) shouldSave = true; else if (obj.type === 'abu' && (dist > 500 || obj.pathTimer > 60)) scheduleSave = true;
+        if (obj.type === 'batu' && dist > 10) shouldSave = true; else if (obj.type === 'abu' && (dist > 500 || obj.pathTimer > 60)) shouldSave = true;
         if (shouldSave) { obj.path.push({x: obj.x, y: obj.y}); obj.pathTimer = 0; if (obj.path.length > 5000) obj.path.shift(); }
     }
 }
