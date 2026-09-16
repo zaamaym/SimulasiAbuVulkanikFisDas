@@ -136,18 +136,29 @@
                             Komposisi Partikel
                             <button onclick="toggleInfo('mix', this, event)" class="info-btn text-slate-400"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg></button>
                         </label>
-                        <!-- Stylized Select Option -->
-                        <div class="relative">
-                            <select id="input-mix" class="w-full appearance-none px-3 py-3 md:py-2 border border-slate-300 hover:border-blue-400 bg-white rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 shadow-sm cursor-pointer transition-all">
-                                <option value="all">Campuran Realistis (Lapili & Abu)</option>
+                        
+                        <!-- CUSTOM DROPDOWN UI: Komposisi Partikel -->
+                        <div class="custom-select-wrapper relative z-[60]">
+                            <select id="input-mix" class="hidden">
+                                <option value="all" selected>Campuran Realistis (Lapili & Abu)</option>
                                 <option value="mega">Letusan Ekstrem (Bom Megablock)</option>
                                 <option value="ash_only">Hanya Abu Vulkanik (Tanpa Batu)</option>
                                 <option value="bomb_only">Hanya Proyektil Balistik</option>
                             </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                            <div class="custom-select-trigger w-full px-3 py-3 md:py-2 border border-slate-300 hover:border-blue-400 bg-white rounded-lg text-sm text-slate-700 shadow-sm cursor-pointer flex justify-between items-center transition-all">
+                                <span class="custom-select-text truncate">Campuran Realistis (Lapili & Abu)</span>
+                                <svg class="h-4 w-4 text-slate-400 transition-transform duration-200 shrink-0 ml-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            </div>
+                            <div class="custom-select-options absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-xl hidden opacity-0 transition-all duration-200 transform origin-top scale-y-95 overflow-hidden">
+                                <div class="max-h-48 overflow-y-auto py-1">
+                                    <div class="custom-option px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors border-b border-slate-50" data-value="all">Campuran Realistis (Lapili & Abu)</div>
+                                    <div class="custom-option px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors border-b border-slate-50" data-value="mega">Letusan Ekstrem (Bom Megablock)</div>
+                                    <div class="custom-option px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors border-b border-slate-50" data-value="ash_only">Hanya Abu Vulkanik (Tanpa Batu)</div>
+                                    <div class="custom-option px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors" data-value="bomb_only">Hanya Proyektil Balistik</div>
+                                </div>
                             </div>
                         </div>
+                        
                     </div>
 
                     <div>
@@ -209,27 +220,42 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="text-xs text-slate-500 mb-1 block">Satuan Jarak</label>
-                        <!-- Stylized Select Option -->
-                        <div class="relative">
-                            <select id="input-unit" class="w-full appearance-none px-2.5 py-2 md:py-1.5 border border-slate-300 hover:border-blue-400 bg-white rounded-md text-[11px] text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 shadow-sm cursor-pointer transition-all">
+                        <!-- CUSTOM DROPDOWN UI: Satuan Jarak -->
+                        <div class="custom-select-wrapper relative z-[50]">
+                            <select id="input-unit" class="hidden">
                                 <option value="km" selected>Kilometer (km)</option>
                                 <option value="m">Meter (m)</option>
                             </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
-                                <svg class="fill-current h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                            <div class="custom-select-trigger w-full px-2.5 py-2 md:py-1.5 border border-slate-300 hover:border-blue-400 bg-white rounded-md text-[11px] text-slate-700 shadow-sm cursor-pointer flex justify-between items-center transition-all">
+                                <span class="custom-select-text truncate">Kilometer (km)</span>
+                                <svg class="h-3 w-3 text-slate-400 transition-transform duration-200 shrink-0 ml-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            </div>
+                            <div class="custom-select-options absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-md shadow-xl hidden opacity-0 transition-all duration-200 transform origin-top scale-y-95 overflow-hidden">
+                                <div class="py-1">
+                                    <div class="custom-option px-2.5 py-2 text-[11px] text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors border-b border-slate-50" data-value="km">Kilometer (km)</div>
+                                    <div class="custom-option px-2.5 py-2 text-[11px] text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors" data-value="m">Meter (m)</div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    
                     <div id="tour-step-mode">
                         <label class="text-xs text-slate-500 mb-1 flex items-center gap-1">Mode <button onclick="toggleInfo('mode', this, event)" class="info-btn"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg></button></label>
-                        <!-- Stylized Select Option -->
-                        <div class="relative">
-                            <select id="input-mode" class="w-full appearance-none px-2.5 py-2 md:py-1.5 border border-slate-300 hover:border-blue-400 bg-white rounded-md text-[11px] text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 shadow-sm cursor-pointer transition-all">
+                        <!-- CUSTOM DROPDOWN UI: Mode -->
+                        <div class="custom-select-wrapper relative z-[50]">
+                            <select id="input-mode" class="hidden">
                                 <option value="fisika">Realis (Euler)</option>
                                 <option value="demo" selected>Demo (Cepat)</option>
                             </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
-                                <svg class="fill-current h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                            <div class="custom-select-trigger w-full px-2.5 py-2 md:py-1.5 border border-slate-300 hover:border-blue-400 bg-white rounded-md text-[11px] text-slate-700 shadow-sm cursor-pointer flex justify-between items-center transition-all">
+                                <span class="custom-select-text truncate">Demo (Cepat)</span>
+                                <svg class="h-3 w-3 text-slate-400 transition-transform duration-200 shrink-0 ml-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            </div>
+                            <div class="custom-select-options absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-md shadow-xl hidden opacity-0 transition-all duration-200 transform origin-top scale-y-95 overflow-hidden">
+                                <div class="py-1">
+                                    <div class="custom-option px-2.5 py-2 text-[11px] text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors border-b border-slate-50" data-value="fisika">Realis (Euler)</div>
+                                    <div class="custom-option px-2.5 py-2 text-[11px] text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors" data-value="demo">Demo (Cepat)</div>
+                                </div>
                             </div>
                         </div>
                     </div>
