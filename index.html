@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KRAKASON - Dashboard Simulasi Anak Krakatau</title>
     
-    <!-- Tautkan file CSS eksternal -->
+    <!-- Tautkan file CSS, JS, dan Icon eksternal sesuai direktori baru -->
+    <link rel="icon" type="image/png" href="assets/img/krakason.png" />
     <link rel="stylesheet" href="assets/css/style.css">
 
     <!-- Tailwind CSS -->
@@ -97,7 +98,7 @@
                             </label>
                             <span id="ui-plume-height" class="text-sm font-black text-indigo-700 bg-white px-2 py-0.5 rounded border border-indigo-200">0.0 km</span>
                         </div>
-                        <p class="text-[9px] text-indigo-500 leading-tight mt-1">Dihitung dari Kecepatan, Suhu, & Elevasi Gunung. Mempengaruhi radius Awan Payung.</p>
+                        <p class="text-[9px] text-indigo-500 leading-tight mt-1">Dihitung analitik ($v_0, T_0, h_0$). Mempengaruhi radius Awan Payung.</p>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
@@ -105,10 +106,10 @@
                             <div class="flex justify-between items-center mb-1">
                                 <label class="text-xs text-slate-500 flex items-center gap-1">Sudut ($\theta$) <button onclick="toggleInfo('angle', this, event)" class="info-btn text-slate-300"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg></button></label>
                                 <div class="flex items-center gap-1">
-                                    <input type="number" id="num-angle" min="45" max="90" step="1" value="88" class="w-12 px-1 py-1 md:py-0.5 border border-slate-300 rounded text-right text-slate-700 font-bold focus:outline-none">
+                                    <input type="number" id="num-angle" min="45" max="90" step="1" value="65" class="w-12 px-1 py-1 md:py-0.5 border border-slate-300 rounded text-right text-slate-700 font-bold focus:outline-none">
                                 </div>
                             </div>
-                            <input type="range" id="input-angle" min="45" max="90" step="1" value="88" class="w-full accent-slate-500 h-2 md:h-1">
+                            <input type="range" id="input-angle" min="45" max="90" step="1" value="65" class="w-full accent-slate-500 h-2 md:h-1">
                         </div>
                         <div>
                             <div class="flex justify-between items-center mb-1">
@@ -140,21 +141,21 @@
                         <!-- CUSTOM DROPDOWN UI: Komposisi Partikel -->
                         <div class="custom-select-wrapper relative z-[60]">
                             <select id="input-mix" class="hidden">
-                                <option value="all" selected>Campuran Realistis (Lapili & Abu)</option>
-                                <option value="mega">Letusan Ekstrem (Bom Megablock)</option>
+                                <option value="all" selected>Campuran Realistis (Bom 30cm & Abu)</option>
+                                <option value="mega">Letusan Ekstrem (Bom Megablock 1m)</option>
                                 <option value="ash_only">Hanya Abu Vulkanik (Tanpa Batu)</option>
-                                <option value="bomb_only">Hanya Proyektil Balistik</option>
+                                <option value="bomb_only">Hanya Proyektil Balistik (Bom 50cm)</option>
                             </select>
                             <div class="custom-select-trigger w-full px-3 py-3 md:py-2 border border-slate-300 hover:border-blue-400 bg-white rounded-lg text-sm text-slate-700 shadow-sm cursor-pointer flex justify-between items-center transition-all">
-                                <span class="custom-select-text truncate">Campuran Realistis (Lapili & Abu)</span>
+                                <span class="custom-select-text truncate">Campuran Realistis (Bom 30cm & Abu)</span>
                                 <svg class="h-4 w-4 text-slate-400 transition-transform duration-200 shrink-0 ml-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                             </div>
                             <div class="custom-select-options absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-xl hidden opacity-0 transition-all duration-200 transform origin-top scale-y-95 overflow-hidden">
                                 <div class="max-h-48 overflow-y-auto py-1">
-                                    <div class="custom-option px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors border-b border-slate-50" data-value="all">Campuran Realistis (Lapili & Abu)</div>
-                                    <div class="custom-option px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors border-b border-slate-50" data-value="mega">Letusan Ekstrem (Bom Megablock)</div>
+                                    <div class="custom-option px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors border-b border-slate-50" data-value="all">Campuran Realistis (Bom 30cm & Abu)</div>
+                                    <div class="custom-option px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors border-b border-slate-50" data-value="mega">Letusan Ekstrem (Bom Megablock 1m)</div>
                                     <div class="custom-option px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors border-b border-slate-50" data-value="ash_only">Hanya Abu Vulkanik (Tanpa Batu)</div>
-                                    <div class="custom-option px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors" data-value="bomb_only">Hanya Proyektil Balistik</div>
+                                    <div class="custom-option px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors" data-value="bomb_only">Hanya Proyektil Balistik (Bom 50cm)</div>
                                 </div>
                             </div>
                         </div>
@@ -490,7 +491,7 @@
                     <li><b>Ketinggian Maksimum Dinamis:</b> Tinggi plume tidak lagi memakai nilai statis, melainkan dihitung analitik menggunakan kombinasi momentum semburan (<i>Gas Thrust</i>) dan konveksi apung (<i>Thermal Buoyancy</i>) $\approx \frac{v_0^2}{2g} + f(T_0, \dot{M})$.</li>
                     <li><b>Efek Penahan Stratosfer (Tropopause Dampening):</b> Ketika plume termal menembus batas troposfer (11 km), tekanan atmosfer yang stabil menekan kecepatan konveksi secara eksponensial. Erupsi harus sangat kuat ($> 1500^\circ\text{C}$ & $600\text{ m/s}$) untuk mencapai 20 km.</li>
                     <li><b>Model Drag Dinamis:</b> Hambatan udara tidak statis. Simulator secara dinamis menghitung Bilangan Reynolds ($Re$) dan mengevaluasinya ke dalam korelasi empiris tak-sferis <i>Haider & Levenspiel (1989)</i> di setiap $\Delta t$.</li>
-                    <li><b>Kestabilan Integrator:</b> Menggunakan skema penyelesaian matematika semi-implisit Euler dengan Baseline timestep: $\Delta t = 0.005$ s untuk menangani fenomena <i>Stiff Equation</i> akibat abu berukuran mikron.</li>
+                    <li><b>Kestabilan Integrator:</b> Menggunakan metode <b>Semi-Implicit Euler</b> dengan timestep adaptif ($\Delta t = 0.005$ s) untuk menangani fenomena <i>Stiff Equation</i> akibat abu berukuran mikron.</li>
                     <li><b>Elutriation Threshold:</b> Tidak semua material yang keluar dari kawah terseret naik oleh konveksi gas termal. Partikel dengan diameter lebih besar dari 1 mm memiliki hambatan updraft yang tidak cukup untuk melawan gravitasi balistiknya.</li>
                 </ul>
 
@@ -507,11 +508,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="bg-white"><td class="border border-slate-300 px-3 py-2">Tinggi plume skenario</td><td class="border border-slate-300 px-3 py-2">$7000\text{ ft} = 2133,6\text{ m}$</td><td class="border border-slate-300 px-3 py-2">Input Skenario</td><td class="border border-slate-300 px-3 py-2">Data observasi lapangan</td></tr>
+                            <tr class="bg-white"><td class="border border-slate-300 px-3 py-2">Tinggi Plume Maksimal</td><td class="border border-slate-300 px-3 py-2">Dinamis (Max $\approx 15\text{ km}$)</td><td class="border border-slate-300 px-3 py-2">Kalkulasi Termodinamika ($v_0, T_0, h_0$)</td><td class="border border-slate-300 px-3 py-2">Pendekatan Analitik</td></tr>
                             <tr class="bg-slate-50"><td class="border border-slate-300 px-3 py-2">Angin maksimum</td><td class="border border-slate-300 px-3 py-2">$15\text{ knot} \approx 7,72\text{ m/s}$</td><td class="border border-slate-300 px-3 py-2">Data observasi (7.5 m/s hanya pembulatan)</td><td class="border border-slate-300 px-3 py-2">BMKG</td></tr>
                             <tr class="bg-white"><td class="border border-slate-300 px-3 py-2">Profil angin $u(z)$</td><td class="border border-slate-300 px-3 py-2">$u(0)=0 \rightarrow u(H)=7,72\text{ m/s}$</td><td class="border border-slate-300 px-3 py-2">Synthetic model, bukan profil sounding</td><td class="border border-slate-300 px-3 py-2">Dibangun dari data angin BMKG</td></tr>
                             <tr class="bg-slate-50"><td class="border border-slate-300 px-3 py-2">Updraft $w_0$</td><td class="border border-slate-300 px-3 py-2">$100\text{ m/s}$</td><td class="border border-slate-300 px-3 py-2">Asumsi model</td><td class="border border-slate-300 px-3 py-2">Asumsi baseline kita</td></tr>
-                            <tr class="bg-white"><td class="border border-slate-300 px-3 py-2">Bentuk plume</td><td class="border border-slate-300 px-3 py-2">$w(z) = w_0(1 - z/H)$</td><td class="border border-slate-300 px-3 py-2">Reduced-order model</td><td class="border border-slate-300 px-3 py-2">Asumsi model</td></tr>
+                            <tr class="bg-white"><td class="border border-slate-300 px-3 py-2">Profil Updraft $w(z)$</td><td class="border border-slate-300 px-3 py-2">Sinusoidal & Cosinusoidal decay</td><td class="border border-slate-300 px-3 py-2">Reduced-order model</td><td class="border border-slate-300 px-3 py-2">Penyesuaian Model Dinamis</td></tr>
                             <tr class="bg-slate-50"><td class="border border-slate-300 px-3 py-2">Di atas plume</td><td class="border border-slate-300 px-3 py-2">$w(z > H) = 0$</td><td class="border border-slate-300 px-3 py-2">Boundary condition</td><td class="border border-slate-300 px-3 py-2">Definisi model</td></tr>
                             <tr class="bg-white"><td class="border border-slate-300 px-3 py-2">Gravitasi standar</td><td class="border border-slate-300 px-3 py-2">$g_0 = 9,80665\text{ m/s}^2$</td><td class="border border-slate-300 px-3 py-2">Konstanta ISA</td><td class="border border-slate-300 px-3 py-2">U.S. Std Atmosphere 1976</td></tr>
                             <tr class="bg-slate-50"><td class="border border-slate-300 px-3 py-2">Konstanta gas udara ($R$)</td><td class="border border-slate-300 px-3 py-2">$287,05\text{ J/(kg K)}$</td><td class="border border-slate-300 px-3 py-2">Konstanta</td><td class="border border-slate-300 px-3 py-2">U.S. Std Atmosphere 1976</td></tr>
@@ -521,12 +522,12 @@
                             <tr class="bg-slate-50"><td class="border border-slate-300 px-3 py-2">Viskositas referensi</td><td class="border border-slate-300 px-3 py-2">$1,716 \times 10^{-5}\text{ Pa s}$</td><td class="border border-slate-300 px-3 py-2">Sutherland</td><td class="border border-slate-300 px-3 py-2">NASA</td></tr>
                             <tr class="bg-white"><td class="border border-slate-300 px-3 py-2">Sutherland constant</td><td class="border border-slate-300 px-3 py-2">$110,4\text{ K}$</td><td class="border border-slate-300 px-3 py-2">Sutherland</td><td class="border border-slate-300 px-3 py-2">NASA</td></tr>
                             <tr class="bg-slate-50"><td class="border border-slate-300 px-3 py-2">Densitas abu glass-rich</td><td class="border border-slate-300 px-3 py-2">$2350\text{--}2450\text{ kg/m}^3$</td><td class="border border-slate-300 px-3 py-2">Literatur</td><td class="border border-slate-300 px-3 py-2">USGS</td></tr>
-                            <tr class="bg-white"><td class="border border-slate-300 px-3 py-2">Densitas baseline abu</td><td class="border border-slate-300 px-3 py-2">$2400\text{ kg/m}^3$</td><td class="border border-slate-300 px-3 py-2">Asumsi representatif</td><td class="border border-slate-300 px-3 py-2">Diturunkan dari rentang USGS</td></tr>
+                            <tr class="bg-white"><td class="border border-slate-300 px-3 py-2">Densitas Partikel ($\rho_p$)</td><td class="border border-slate-300 px-3 py-2">Dinamis ($800\text{--}3000\text{ kg/m}^3$)</td><td class="border border-slate-300 px-3 py-2">Input Skenario Parameter</td><td class="border border-slate-300 px-3 py-2">Pilihan Interaktif User</td></tr>
                             <tr class="bg-slate-50"><td class="border border-slate-300 px-3 py-2">Densitas litik baseline</td><td class="border border-slate-300 px-3 py-2">$2500\text{ kg/m}^3$</td><td class="border border-slate-300 px-3 py-2">Asumsi model</td><td class="border border-slate-300 px-3 py-2">Parameter model</td></tr>
                             <tr class="bg-white"><td class="border border-slate-300 px-3 py-2">Ukuran tephra</td><td class="border border-slate-300 px-3 py-2">Lapilli (2-64 mm) | Ash (<2 mm)</td><td class="border border-slate-300 px-3 py-2">Klasifikasi</td><td class="border border-slate-300 px-3 py-2">USGS</td></tr>
                             <tr class="bg-slate-50"><td class="border border-slate-300 px-3 py-2">Diameter kelas</td><td class="border border-slate-300 px-3 py-2">8 mm; 1 mm; 0,25 mm; 63 µm; 10 µm</td><td class="border border-slate-300 px-3 py-2">Bin model</td><td class="border border-slate-300 px-3 py-2">Diskretisasi model</td></tr>
                             <tr class="bg-white"><td class="border border-slate-300 px-3 py-2">Sphericity ($\Psi$)</td><td class="border border-slate-300 px-3 py-2">$0,80; 0,65; 0,60; 0,50; 0,45$</td><td class="border border-slate-300 px-3 py-2">Asumsi baseline</td><td class="border border-slate-300 px-3 py-2">Parameter model</td></tr>
-                            <tr class="bg-slate-50"><td class="border border-slate-300 px-3 py-2">Fraksi massa $f_i$</td><td class="border border-slate-300 px-3 py-2">$0,15; 0,25; 0,30; 0,20; 0,10$</td><td class="border border-slate-300 px-3 py-2">Asumsi baseline TGSD</td><td class="border border-slate-300 px-3 py-2">Skenario komputasi</td></tr>
+                            <tr class="bg-slate-50"><td class="border border-slate-300 px-3 py-2">Fraksi massa $f_i$</td><td class="border border-slate-300 px-3 py-2">Referensi TGSD</td><td class="border border-slate-300 px-3 py-2">Belum dipakai untuk spawn weight</td><td class="border border-slate-300 px-3 py-2">Skenario Komputasi Lanjut</td></tr>
                             <tr class="bg-white"><td class="border border-slate-300 px-3 py-2">Drag coefficient ($C_d$)</td><td class="border border-slate-300 px-3 py-2">Model empiris</td><td class="border border-slate-300 px-3 py-2">Dievaluasi dinamis</td><td class="border border-slate-300 px-3 py-2">Haider & Levenspiel (1989)</td></tr>
                             <tr class="bg-slate-50"><td class="border border-slate-300 px-3 py-2">Timestep baseline</td><td class="border border-slate-300 px-3 py-2">$0,005\text{ s}$</td><td class="border border-slate-300 px-3 py-2">Parameter numerik sementara</td><td class="border border-slate-300 px-3 py-2">Akan dievaluasi melalui uji konvergensi</td></tr>
                         </tbody>
@@ -535,7 +536,7 @@
 
                 <h3 class="font-bold text-slate-900 border-b pb-1 mt-6 text-base">2. Penjelasan Mode Fisika</h3>
                 <ul class="list-disc pl-5 space-y-2">
-                    <li><b>Fenomena "Residence Time":</b> Pada Mode Fisika, abu halus tampak tertahan dan bergerak horizontal di ketinggian plume ($\approx 2.1\text{ km}$). Ini <b>bukan bug</b>. Partikel sangat halus memiliki respons drag yang kuat dan settling yang lambat sehingga dapat memiliki residence time yang panjang. Sementara partikel perlahan turun sejauh 2 km, angin horizontal $u(z)$ terus menyeretnya tanpa ampun hingga ratusan kilometer (seperti kasus sebaran abu ke Pulau Enggano).</li>
+                    <li><b>Fenomena "Residence Time":</b> Pada Mode Fisika, abu halus tampak tertahan dan bergerak horizontal begitu mencapai titik netral buoyancy atau batas awan payung (<i>Umbrella Cloud</i>). Ini <b>bukan bug</b>. Partikel sangat halus memiliki respons drag yang kuat dan settling yang lambat sehingga dapat memiliki residence time yang panjang. Sementara partikel perlahan turun sejauh 2 km, angin horizontal $u(z)$ terus menyeretnya tanpa ampun hingga ratusan kilometer (seperti kasus sebaran abu ke Pulau Enggano).</li>
                     <li><b>Model Drag Dinamis:</b> Hambatan udara tidak statis. Simulator secara dinamis menghitung Bilangan Reynolds ($Re$) dan mengevaluasinya ke dalam korelasi empiris tak-sferis <i>Haider & Levenspiel (1989)</i> di setiap $\Delta t$.</li>
                     <li><b>Kestabilan Integrator:</b> Baseline timestep: $\Delta t = 0.005$ s. Nilai ini akan dievaluasi lebih lanjut melalui uji konvergensi timestep untuk menangani fenomena <i>Stiff Equation</i> akibat debu halus.</li>
                 </ul>
@@ -558,7 +559,7 @@
                 </div>
                 
                 <p class="text-justify leading-relaxed text-slate-500">
-                    Mensimulasikan debu mikroskopis menggunakan <i>Forward Euler</i> membutuhkan komputasi jutaan iterasi. Gunakan mode Realis hanya saat Anda siap mempercepat waktu simulasi secara masif menggunakan fitur Warp.
+                    Mensimulasikan debu mikroskopis menggunakan <i>Semi-Implicit Euler</i> membutuhkan komputasi jutaan iterasi. Gunakan mode Realis hanya saat Anda siap mempercepat waktu simulasi secara masif menggunakan fitur Warp.
                 </p>
             </div>
         </div>
