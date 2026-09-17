@@ -15,9 +15,9 @@ overlay.addEventListener('click', toggleSidebar);
 
 // --- 2. LOGIKA INFO BUBBLE TOOLTIP ('i') ---
 const varInfoDict = {
-    'v0': { title: "Kecepatan Semburan Awal ($v_0$)", text: "Kecepatan gas saat memuntahkan material. Semakin tinggi nilainya, semakin kuat dorongan vertikalnya, memungkinkan abu mencapai ketinggian ekstrem." },
-    'temp': { title: "Temperatur Magma ($T_0$)", text: "Suhu sangat panas memicu daya apung (Thermal Buoyancy) di atmosfer, menarik debu (updraft) hingga mampu menembus lapisan stratosfer." },
-    'plumeHeight': { title: "Tinggi Kolom Erupsi", text: "Dihitung analitik dari momentum dorongan semburan (Gas Thrust), konveksi apung (Thermal Buoyancy), dan elevasi gunung. Semakin tinggi kolom, kipas penyebaran abu di peta juga makin luas (lebar)." },
+    'v0': { title: "Kecepatan Semburan Awal ($v_0$)", text: "Kecepatan dorongan material saat keluar dari kawah (Gas Thrust). Momentum kinetik dari kecepatan ini akan mendorong material melawan gravitasi awal sebelum daya apung konvektif mengambil alih." },
+    'temp': { title: "Temperatur Magma ($T_0$)", text: "Suhu awal campuran gas dan abu. Perbedaan suhu yang ekstrem dengan udara sekitar memicu gaya apung (Thermal Buoyancy), memberikan kecepatan vertikal tambahan (updraft) yang kuat." },
+    'plumeHeight': { title: "Tinggi Kolom Erupsi", text: "Dihitung secara analitik berdasarkan momentum semburan ($v_0$), gaya apung termal ($T_0$), dan elevasi ($h_0$). Ketinggian ini akan membatasi seberapa jauh penyebaran awan payung (Umbrella Cloud) di peta." },
     'angle': { title: "Sudut Letusan ($\\theta$)", text: "Mempengaruhi arah jatuhan proyektil balistik (batu pijar/bom vulkanik). Semakin miring, lontaran batu akan semakin jauh ke laut." },
     'ventAlt': { title: "Elevasi Kawah ($h_0$)", text: "Ketinggian awal lubang kawah dari permukaan laut. Untuk Anak Krakatau posisinya dekat dengan permukaan laut (hampir 0)." },
     'mix': { title: "Komposisi Partikel", text: "Letusan ekstrem menghasilkan bongkahan proyektil berat yang cepat jatuh, letusan debu memproduksi abu mikroskopis ringan yang terbang jauh." },
@@ -255,7 +255,7 @@ function updateLegendUI() {
     
     let html = '';
     if (mixType === 'all' || mixType === 'bomb_only' || mixType === 'mega') {
-        let label = mixType === 'mega' ? "Bom Megablock (1 m)" : "Lapili / Proyektil (8 mm)";
+        let label = mixType === 'mega' ? "Bom Megablock (1 m)" : "Lapili / Proyektil (30 cm)";
         html += `<div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#ef4444] shadow-sm"></div> ${label}</div>`;
     }
     if (mixType === 'all' || mixType === 'ash_only' || mixType === 'mega') {
@@ -291,7 +291,6 @@ const tourSteps = [
 function startTour() {
     document.getElementById('tour-click-blocker').classList.remove('hidden');
     
-    // Matikan scroll area sidebar agar sorotan tidak meleset
     const sidebarScrollArea = document.getElementById('sidebar-scroll-area');
     if (sidebarScrollArea) {
         sidebarScrollArea.classList.remove('overflow-y-auto');
@@ -300,7 +299,6 @@ function startTour() {
 
     currentTourStep = 0;
     
-    // Inisialisasi awal DOM agar punya dimensi
     document.getElementById('tour-highlighter').classList.remove('hidden');
     document.getElementById('tour-dialog').classList.remove('hidden');
 
@@ -355,9 +353,12 @@ function renderTourStep() {
                     const elementCenterY = rect.top + (rect.height / 2);
                     if (elementCenterY > window.innerHeight / 2) {
                         dialog.style.top = '24px';
+                        dialog.style.bottom = 'auto';
                     } else {
-                        dialog.style.top = (window.innerHeight - dialog.offsetHeight - 24) + 'px';
+                        dialog.style.top = 'auto';
+                        dialog.style.bottom = '24px';
                     }
+                    dialog.style.borderRadius = '1rem';
                 } else {
                     dialog.style.width = '350px';
                     let dlgX = rect.right + 20;
@@ -406,15 +407,23 @@ function nextTourStep() {
     if (currentTourStep >= tourSteps.length - 1) {
         endTour();
     } else {
-        currentTourStep++;
-        renderTourStep();
+        document.getElementById('tour-dialog').classList.add('opacity-0', 'scale-95');
+        document.getElementById('tour-highlighter').classList.add('opacity-0');
+        setTimeout(() => {
+            currentTourStep++;
+            renderTourStep();
+        }, 250); 
     }
 }
 
 function prevTourStep() {
     if (currentTourStep > 0) {
-        currentTourStep--;
-        renderTourStep();
+        document.getElementById('tour-dialog').classList.add('opacity-0', 'scale-95');
+        document.getElementById('tour-highlighter').classList.add('opacity-0');
+        setTimeout(() => {
+            currentTourStep--;
+            renderTourStep();
+        }, 250);
     }
 }
 
@@ -423,7 +432,6 @@ function endTour() {
     document.getElementById('tour-highlighter').classList.add('hidden', 'opacity-0');
     document.getElementById('tour-dialog').classList.add('hidden', 'opacity-0', 'scale-95');
     
-    // Kembalikan kemampuan scroll sidebar
     const sidebarScrollArea = document.getElementById('sidebar-scroll-area');
     if (sidebarScrollArea) {
         sidebarScrollArea.classList.add('overflow-y-auto');
@@ -456,12 +464,16 @@ let mapInitialized = false; let leafletMap; let ashMapLayers = [];
 function initMap() {
     if(mapInitialized) return;
     const lat = -6.102; const lng = 105.423;
+    
     const vectorMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' });
     const satelliteMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' });
+    const topoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenTopoMap' });
+    const darkMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' });
 
+    // DEFAULT LAYER BERUBAH KE vectorMap
     leafletMap = L.map('leaflet-map', { center: [lat, lng], zoom: 8, layers: [vectorMap], zoomControl: false });
     L.control.zoom({ position: 'topleft' }).addTo(leafletMap);
-    L.control.layers({ "Peta Vektor (OSM)": vectorMap, "Satelit (Esri)": satelliteMap }, null, {position: 'topright'}).addTo(leafletMap);
+    L.control.layers({ "Peta Vektor (OSM)": vectorMap, "Satelit (Esri)": satelliteMap, "Topografi": topoMap, "Gelap (Dark Mode)": darkMap }, null, {position: 'topright'}).addTo(leafletMap);
 
     const craterIcon = L.divIcon({ html: '<div class="w-4 h-4 bg-red-600 border-2 border-white rounded-full shadow-[0_0_15px_rgba(220,38,38,1)]"></div>', className: '' });
     L.marker([lat, lng], {icon: craterIcon}).addTo(leafletMap).bindPopup("<b>Gunung Anak Krakatau</b>").openPopup();
@@ -493,11 +505,13 @@ function updateMapDynamicRadius() {
     umbrella.addTo(leafletMap); ashMapLayers.push(umbrella);
 
     const windDir = parseFloat(document.getElementById('map-wind-dir').value) || 90;
-    
     let dynamicSpread = 20 + (state.hColBase / 15000) * 60;
     dynamicSpread = Math.min(90, Math.max(20, dynamicSpread));
 
-    state.particles.filter(p => p.type === 'abu').reverse().forEach(p => {
+    // PERBAIKAN: Mengurutkan dari maxX terbesar ke terkecil agar poligon yang kecil bisa diklik (z-index Leaflet)
+    const abuParticles = state.particles.filter(p => p.type === 'abu').sort((a, b) => b.maxX - a.maxX);
+    
+    abuParticles.forEach(p => {
         if (p.maxX > 50) { 
             let fan = L.polygon(getTephraFanPolygon(lat, lng, p.maxX, windDir, dynamicSpread), { color: p.color, weight: 1, fillColor: p.color, fillOpacity: 0.35 })
                 .bindPopup(`<b>${p.name}</b><br>Jangkauan Angin: ${(p.maxX/1000).toFixed(2)} km<br>Arah: ${windDir}°`);
@@ -597,7 +611,11 @@ function resetSimulation() {
     updateLegendUI();
     
     state.t = 0; state.particles = [];
-    const d_batu = (mixType === 'mega') ? 1.0 : 8.0e-3;
+    
+    // PERBAIKAN: UKURAN BATU DIPERBESAR
+    let d_batu = 0.3; // 30 cm untuk default campuran realistis
+    if (mixType === 'mega') d_batu = 1.0; 
+    else if (mixType === 'bomb_only') d_batu = 0.5;
 
     if (mixType === 'all' || mixType === 'bomb_only' || mixType === 'mega') {
         state.particles.push({
@@ -651,7 +669,11 @@ function stepPhysicsCore(obj, dt) {
     } else {
         const atm = getAtmosphere(obj.y);
         let elutriation = 1.0;
-        if (obj.type === 'batu') elutriation = 0.05; else if (obj.d > 1e-3) elutriation = 0.1; else if (obj.d > 2.5e-4) elutriation = 0.5;   
+        
+        if (obj.type === 'batu') elutriation = 0.05; 
+        else if (obj.d > 1e-3) elutriation = 0.1; 
+        else if (obj.d > 2.5e-4) elutriation = 0.5;   
+        
         let w_air = 0; let u_umbrella = 0;
         if (obj.type === 'abu') {
             let r_decay = env.plumeRadius > 0 ? Math.exp(-Math.pow(obj.x / env.plumeRadius, 2)) : 0;
@@ -800,12 +822,13 @@ Object.keys(inputs).forEach(key => {
     if (nums[key]) nums[key].addEventListener('input', () => { syncValues(key, 'num'); if (simulationInputKeys.has(key)) triggerSeamlessReset(); });
 });
 
-mixSelect.addEventListener('change', triggerSeamlessReset); modeSelect.addEventListener('change', triggerSeamlessReset);
-unitSelect.addEventListener('change', () => { updateResults(); if (!isPlaying) draw(); });
+document.getElementById('input-mix').addEventListener('change', triggerSeamlessReset); 
+document.getElementById('input-mode').addEventListener('change', triggerSeamlessReset);
+document.getElementById('input-unit').addEventListener('change', () => { updateResults(); if (!isPlaying) draw(); });
 
 function animate() {
     if (!isPlaying) return;
-    const mode = modeSelect.value; const dt = mode === 'demo' ? 0.05 : 0.005; const targetMinutesPerRealSec = parseFloat(inputs.warp.value) || 60; const fps = 60; const MAX_ITER = 3000;
+    const mode = document.getElementById('input-mode').value; const dt = mode === 'demo' ? 0.05 : 0.005; const targetMinutesPerRealSec = parseFloat(inputs.warp.value) || 60; const fps = 60; const MAX_ITER = 3000;
     let simSecondsPerFrame = (targetMinutesPerRealSec * 60) / fps; let warpFactor = Math.ceil(simSecondsPerFrame / dt);
     if (warpFactor > MAX_ITER) warpFactor = MAX_ITER;
     
