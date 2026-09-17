@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dashboard Simulasi Erupsi Anak Krakatau</title>
+    <title>KRAKASON - Dashboard Simulasi Anak Krakatau</title>
     
     <!-- Tautkan file CSS eksternal -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -34,15 +34,15 @@
         
         <div class="p-4 md:p-5 bg-red-800 text-white shadow-md flex justify-between items-center shrink-0">
             <div>
-                <h1 class="text-lg md:text-xl font-bold">Anak Krakatau</h1>
-                <p class="text-[10px] md:text-[11px] text-red-200 mt-0.5">Termodinamika & Atmosfer Bertingkat</p>
+                <h1 class="text-lg md:text-xl font-bold tracking-wide">KRAKASON</h1>
+                <p class="text-[10px] md:text-[11px] text-red-200 mt-0.5">Simulasi Erupsi Anak Krakatau</p>
             </div>
             <div class="flex items-center gap-3">
                 <div class="w-7 h-7 md:w-8 md:h-8 bg-red-600 rounded-full flex items-center justify-center animate-pulse shadow-lg border-2 border-red-400">
                     <span class="text-[9px] md:text-[10px] font-bold">LIVE</span>
                 </div>
                 <!-- Tombol Tutup Sidebar -->
-                <button id="btn-close-sidebar" class="md:hidden text-white bg-red-900 hover:bg-red-950 p-1.5 rounded-lg">
+                <button id="btn-close-sidebar" class="md:hidden text-white bg-red-900 hover:bg-red-950 p-1.5 rounded-lg transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <div class="p-4 md:p-5 flex-1 flex flex-col space-y-6 md:space-y-5 overflow-y-auto pb-20 md:pb-6">
+        <div id="sidebar-scroll-area" class="p-4 md:p-5 flex-1 flex flex-col space-y-6 md:space-y-5 overflow-y-auto pb-20 md:pb-6 transition-all">
             
             <!-- 1. SUMBER ERUPSI (VENT) -->
             <div id="tour-step-1-container">
@@ -396,10 +396,10 @@
         <div id="bubble-text" class="leading-relaxed text-justify"></div>
     </div>
 
-    <!-- Tour Overlay & Dialog -->
-    <div id="tour-highlighter" class="fixed z-[100] hidden rounded-lg border-2 border-blue-400 pointer-events-none transition-opacity duration-300" style="box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.85);"></div>
+    <!-- Tour Overlay & Dialog: Menggunakan Smooth Glide Transition -->
+    <div id="tour-highlighter" class="fixed z-[100] hidden rounded-lg border-2 border-blue-400 pointer-events-none transition-all duration-500 ease-in-out opacity-0" style="box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.85);"></div>
     
-    <div id="tour-dialog" class="fixed z-[110] hidden bg-white p-5 shadow-2xl transition-opacity transition-transform duration-300 transform scale-95 opacity-0 max-h-[85vh] flex flex-col">
+    <div id="tour-dialog" class="fixed z-[110] hidden bg-white p-5 shadow-2xl transition-all duration-500 ease-in-out opacity-0 max-h-[85vh] flex flex-col rounded-xl">
         <div class="overflow-y-auto modal-scroll pr-1 flex-1">
             <h3 id="tour-title" class="text-lg font-bold text-slate-800 mb-2"></h3>
             <div id="tour-desc" class="text-sm text-slate-600 mb-2 leading-relaxed"></div>
@@ -563,6 +563,6 @@
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="assets/js/script.js"></script>
 </body>
 </html>
